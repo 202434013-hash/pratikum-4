@@ -14,16 +14,14 @@ class BookSeeder extends Seeder
     {
         \App\Models\Book::create([
             'title' => 'The Lord of the Rings',
-            'author' => 'J.R.R. Tolkien',
-            'description' => 'A fantasy novel.',
-            'published_year' => 1954,
+            'isbn' => '9780544003415',
+            'available' => true,
         ]);
 
         \App\Models\Book::create([
             'title' => '1984',
-            'author' => 'George Orwell',
-            'description' => 'Dystopian social science fiction novel and cautionary tale.',
-            'published_year' => 1949,
+            'isbn' => '9780451524935',
+            'available' => false,
         ]);
     }
 }
