@@ -2,26 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Book;
+use Illuminate\Http\JsonResponse;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
-        $books = \App\Models\Book::all();
-        return response()->json($books);
+        $books = Book::query()
+            ->orderBy('id')
+            ->get()
+            ->map(fn (Book $book): array => $this->bookData($book));
+
+        return response()->json([
+            'data' => $books,
+        ]);
     }
 
-    public function show($id)
+    public function show(int $book): JsonResponse
     {
-        $book = \App\Models\Book::find($id);
+        $bookModel = Book::find($book);
 
-        if (!$book) {
+        if ($bookModel === null) {
             return response()->json([
-                'message' => 'Book not found'
+                'message' => 'Book not found',
+                'errors' => null,
             ], 404);
         }
 
-        return response()->json($book);
+        return response()->json([
+            'data' => $this->bookData($bookModel),
+        ]);
+    }
+
+    private function bookData(Book $book): array
+    {
+        return [
+            'id' => $book->id,
+            'title' => $book->title,
+            'isbn' => $book->isbn,
+            'available' => (bool) $book->available,
+            'created_at' => $book->created_at?->toISOString(),
+        ];
     }
 }
